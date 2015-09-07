@@ -1,4 +1,5 @@
 Django==1.8.4
+dj_database_url
 oauthlib==1.0.3
 PyJWT==1.4.0
 python-openid==2.2.5
