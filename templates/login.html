@@ -1,9 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
 {% if user and not user.is_anonymous %}
-  <a>Hello, {{ user.username }}!</a><br>
-  <a>{{ token }}!</a>
+  <a>Hello, {{ user.username }}!</a>
   <br>
   <a href="/logout/">Logout</a>
 {% else %}
   <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a><br>
   <a href="{% url 'social:begin' 'drchrono' %}?next={{ request.path }}">Login with DrChrono</a>
 {% endif %}
+
+{% endblock %}

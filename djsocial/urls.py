@@ -23,4 +23,5 @@ urlpatterns = patterns(
     url(r'^$', 'djsocial_app.views.login'),
     url(r'^home/$', 'djsocial_app.views.home'),
     url(r'^logout/$', 'djsocial_app.views.logout'),
+    url(r'^api/patients$', 'djsocial_app.views.patients'),
 )
