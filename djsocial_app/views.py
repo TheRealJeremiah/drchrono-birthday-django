@@ -1,14 +1,15 @@
 from django.shortcuts import render_to_response, redirect, render
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-# from django.template.context import RequestContext
-
+from django.template.context import RequestContext
+import json
 
 def login(request):
-    # context = RequestContext(request, {
-    #     'request': request, 'user': request.user})
-    # return render_to_response('login.html', context_instance=context)
-    return render(request, 'login.html')
+    token = json.loads(request.user.social_auth.values_list('extra_data')[0][0])['access_token']
+    context = RequestContext(request, {
+        'request': request, 'user': request.user, 'token': token})
+    return render_to_response('login.html', context_instance=context)
+    # return render(request, 'login.html')
 
 
 @login_required(login_url='/')
