@@ -1,0 +1,21 @@
+#calendar {
+  width: 66%;
+  float:left;
+}
+
+#upcoming {
+  width: 32%;
+  margin-left:2%;
+  float:left;
+}
+
+#upcoming h1{
+  padding-top: 0px;
+  margin-top: 0px;
+}
+
+#upcoming a{
+  position: absolute;
+  right: 10px;
+  top: 12px;
+}

@@ -2,9 +2,73 @@
 {% block content %}
 
 {% if user and not user.is_anonymous %}
-  <a>Hello, {{ user.username }}!</a>
-  <br>
-  <a href="/logout/">Logout</a>
+  <ul class="list-inline">
+    <li><h1>Hello, {{ user.username }}!</h1></li>
+    <li><a href="/logout/">Logout</a></li>
+  </ul>
+  <div id="calendar"></div>
+  <div id="upcoming">
+    <h1>Upcoming Birthdays</h1><br>
+    <ul class="list-group">
+    </ul>
+  </div>
+  <script type="text/javascript">
+    $('#calendar').fullCalendar()
+    $.ajax({
+      url: '/api/patients',
+      success: function (data) {
+        $('#calendar').fullCalendar('addEventSource', data)
+        addUpcoming(data)
+      }
+    })
+
+    function addUpcoming(list) {
+      ul = $('#upcoming').find('.list-group')
+      // sort patients by birthday
+      sortPatients(list)
+      var count = 0
+      for(var i=0; i<list.length; i++) {
+        var item = list[i]
+        added = addItem(ul, item)
+        if (added) {
+          count += 1
+          if (count >4) { break }
+        }
+      }
+    }
+
+    function sortPatients(patients) {
+      patients.sort(function (a,b) {
+        if (a['start'] < b['start']) {
+          return -1
+        } else if (a['start'] > b['start']) {
+          return 1
+        } else {
+          return 0
+        }
+      })
+    }
+
+    function addItem(ul, item) {
+      var yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      if (!item['has_birthday']) {
+        return false
+      }
+      var name = item['title']
+      var date = item['start']
+      var showDate = date.split('-').slice(1).join('-')
+      var dateObj = new Date(date)
+      if (dateObj > yesterday) {
+        var href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + item['email'] + "&su=Happy%20Birthday&body=Hi"
+        var email = '<a href="' + href + '" class="btn btn-success">send greeting!</a>'
+        ul.append('<li class="list-group-item"><h4>' + showDate + ' ' + name + '</h4>' + email + '</li>')
+        return true
+      } else {
+        return false
+      }
+    }
+  </script>
 {% else %}
   <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a><br>
   <a href="{% url 'social:begin' 'drchrono' %}?next={{ request.path }}">Login with DrChrono</a>

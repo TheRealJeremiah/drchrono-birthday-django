@@ -3,6 +3,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 # from django.template.context import RequestContext
 from django.http import JsonResponse
+from datetime import date
 import json, requests, pdb
 
 def login(request):
@@ -29,7 +30,17 @@ def patients(request):
     url = 'https://drchrono.com/api/patients'
     auth = 'Bearer ' + token
     data = requests.get(url, headers={'Authorization': auth}).json()
-    parsed = map(lambda x: {'first_name': x['first_name'],
-                            'email': x['email'],
-                            'date_of_birth': x['date_of_birth']}, data['results'])
+    parsed = map(parse_patient, data['results'])
     return JsonResponse(parsed, safe=False)
+
+def parse_patient(patient):
+    if patient['date_of_birth']:
+        hasBday = True
+        bday = "-".join([str(date.today().year)] + patient['date_of_birth'].split('-')[1:])
+    else:
+        hasBday = False
+        bday = '1970-01-01'
+    return {'title': patient['first_name'],
+            'email': patient['email'],
+            'start': bday,
+            'has_birthday': hasBday}
