@@ -70,8 +70,9 @@
     }
   </script>
 {% else %}
-  <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a><br>
-  <a href="{% url 'social:begin' 'drchrono' %}?next={{ request.path }}">Login with DrChrono</a>
+  <div class="vertical-center">
+    <a class="btn btn-lg btn-success" href="{% url 'social:begin' 'drchrono' %}?next={{ request.path }}">Login with DrChrono</a>
+  </div>
 {% endif %}
 
 {% endblock %}
